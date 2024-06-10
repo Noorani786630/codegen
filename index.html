@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Code Generator</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .code-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .code {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .copied {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>Code Generator</h1>
+        <div class="code-box mt-4 p-3 border">
+            <span id="randomCode" class="code">XYZ1234567</span>
+            <button id="copyButton" class="btn btn-primary">Copy to Clipboard</button>
+        </div>
+        <button id="generateButton" class="btn btn-success mt-4">Generate New Code</button>
+    </div>
+
+    <script>
+        // Set to store generated codes
+        const generatedCodes = new Set();
+
+        // Function to generate random code
+        function generateRandomCode() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const digits = '0123456789';
+            let code = '';
+
+            for (let i = 0; i < 3; i++) {
+                code += letters.charAt(Math.floor(Math.random() * letters.length));
+            }
+
+            for (let i = 0; i < 7; i++) {
+                code += digits.charAt(Math.floor(Math.random() * digits.length));
+            }
+
+            return code;
+        }
+
+        // Function to ensure unique code generation
+        function getUniqueCode() {
+            let code;
+            do {
+                code = generateRandomCode();
+            } while (generatedCodes.has(code));
+            generatedCodes.add(code);
+            return code;
+        }
+
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+        }
+
+        // Function to handle code copy and button color change
+        function handleCopy() {
+            const code = document.getElementById('randomCode').innerText;
+            copyToClipboard(code);
+            const copyButton = document.getElementById('copyButton');
+            copyButton.classList.add('copied');
+            copyButton.innerText = 'Copied!';
+            setTimeout(() => {
+                copyButton.classList.remove('copied');
+                copyButton.innerText = 'Copy to Clipboard';
+            }, 2000);
+        }
+
+        // Event listener for generate button
+        document.getElementById('generateButton').addEventListener('click', () => {
+            const newCode = getUniqueCode();
+            document.getElementById('randomCode').innerText = newCode;
+        });
+
+        // Event listener for copy button
+        document.getElementById('copyButton').addEventListener('click', handleCopy);
+
+        // Generate initial random code
+        document.getElementById('randomCode').innerText = getUniqueCode();
+    </script>
+</body>
+</html>
