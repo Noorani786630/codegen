@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Code Generator</title>
+    <title>Random Code and Name Generator</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
             margin-top: 50px;
         }
-        .code-box {
+        .code-box, .name-box {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .code {
+        .code, .name {
             font-size: 24px;
             font-weight: bold;
         }
@@ -26,17 +26,35 @@
 </head>
 <body>
     <div class="container text-center">
-        <h1>Code Generator</h1>
+        <h1>Code and Name Generator</h1>
+
         <div class="code-box mt-4 p-3 border">
             <span id="randomCode" class="code">XYZ1234567</span>
-            <button id="copyButton" class="btn btn-primary">Copy to Clipboard</button>
+            <button id="copyButtonCode" class="btn btn-primary">Copy to Clipboard</button>
         </div>
-        <button id="generateButton" class="btn btn-success mt-4">Generate New Code</button>
+        <button id="generateButtonCode" class="btn btn-success mt-4">Generate New Code</button>
+
+        <div class="name-box mt-4 p-3 border">
+            <span id="randomName" class="name">John Doe</span>
+            <button id="copyButtonName" class="btn btn-primary">Copy to Clipboard</button>
+        </div>
+        <button id="generateButtonName" class="btn btn-success mt-4">Generate New Name</button>
     </div>
 
     <script>
-        // Set to store generated codes
+        // Set to store generated codes and names
         const generatedCodes = new Set();
+        const generatedNames = new Set();
+
+        // Arrays of names and surnames
+        const firstNames = [
+            'Amit', 'Rajesh', 'Anil', 'Suresh', 'Sunil', 'Mohammed', 'Salman', 'Ayesha', 'Sanjay', 'Ravi', 
+            'Arjun', 'Pooja', 'Sneha', 'Rohit', 'Sameer', 'Yusuf', 'Priya', 'Neha', 'Rahul', 'Manoj'
+        ];
+        const surnames = [
+            'Sharma', 'Patel', 'Gupta', 'Singh', 'Khan', 'Iyer', 'Malhotra', 'Rao', 'Mehta', 'Joshi', 
+            'Nair', 'Reddy', 'Yadav', 'Shetty', 'Bhat', 'Chowdhury', 'Mishra', 'Pathan', 'Jain', 'Dixit'
+        ];
 
         // Function to generate random code
         function generateRandomCode() {
@@ -65,6 +83,23 @@
             return code;
         }
 
+        // Function to generate random name
+        function generateRandomName() {
+            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const surname = surnames[Math.floor(Math.random() * surnames.length)];
+            return `${firstName} ${surname}`;
+        }
+
+        // Function to ensure unique name generation
+        function getUniqueName() {
+            let name;
+            do {
+                name = generateRandomName();
+            } while (generatedNames.has(name));
+            generatedNames.add(name);
+            return name;
+        }
+
         // Function to copy text to clipboard
         function copyToClipboard(text) {
             const tempInput = document.createElement('input');
@@ -76,10 +111,10 @@
         }
 
         // Function to handle code copy and button color change
-        function handleCopy() {
+        function handleCopyCode() {
             const code = document.getElementById('randomCode').innerText;
             copyToClipboard(code);
-            const copyButton = document.getElementById('copyButton');
+            const copyButton = document.getElementById('copyButtonCode');
             copyButton.classList.add('copied');
             copyButton.innerText = 'Copied!';
             setTimeout(() => {
@@ -88,17 +123,40 @@
             }, 2000);
         }
 
-        // Event listener for generate button
-        document.getElementById('generateButton').addEventListener('click', () => {
+        // Function to handle name copy and button color change
+        function handleCopyName() {
+            const name = document.getElementById('randomName').innerText;
+            copyToClipboard(name);
+            const copyButton = document.getElementById('copyButtonName');
+            copyButton.classList.add('copied');
+            copyButton.innerText = 'Copied!';
+            setTimeout(() => {
+                copyButton.classList.remove('copied');
+                copyButton.innerText = 'Copy to Clipboard';
+            }, 2000);
+        }
+
+        // Event listener for generate code button
+        document.getElementById('generateButtonCode').addEventListener('click', () => {
             const newCode = getUniqueCode();
             document.getElementById('randomCode').innerText = newCode;
         });
 
-        // Event listener for copy button
-        document.getElementById('copyButton').addEventListener('click', handleCopy);
+        // Event listener for generate name button
+        document.getElementById('generateButtonName').addEventListener('click', () => {
+            const newName = getUniqueName();
+            document.getElementById('randomName').innerText = newName;
+        });
 
-        // Generate initial random code
+        // Event listener for copy code button
+        document.getElementById('copyButtonCode').addEventListener('click', handleCopyCode);
+
+        // Event listener for copy name button
+        document.getElementById('copyButtonName').addEventListener('click', handleCopyName);
+
+        // Generate initial random code and name
         document.getElementById('randomCode').innerText = getUniqueCode();
+        document.getElementById('randomName').innerText = getUniqueName();
     </script>
 </body>
 </html>
